@@ -2,5 +2,5 @@
 // from the website addresses you list on the key (referer restriction).
 // Never put a Smarty "secret key" (auth-id / auth-token) here.
 window.FREIGHT_CONFIG = {
-  smartyKey: "",
+  smartyKey: "300388869000797297",
 };
