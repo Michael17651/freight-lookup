@@ -21,3 +21,4 @@ One entry per decision: **date — what** — why.
 - **2026-11-10 — Embedded Smarty key lives in `site/config.js` and is committed** — embedded keys are public by design and locked to the allowed hosts.
 - **2026-11-10 — Recent lookups store the result, and clicking one recomputes zone and rural status locally** — no extra Smarty lookups, and the data stays current after a UPS update.
 - **2026-11-10 — Autocomplete waits for a house number, a space and 4 letters of street name, with a 500 ms pause** — the Smarty trial has 1,000 lookups. Repeated text is answered from a per-visit cache, and Enter no longer runs a free-typed address check; the check runs only when a suggestion is picked.
+- **2026-11-10 — Keep the US Street call for Residential/Commercial** — checked a live v2 autocomplete response: suggestions carry only street_line, secondary, city, state, zipcode, entries and smarty_key. No RDI field, so autocomplete cannot replace the verify call.
