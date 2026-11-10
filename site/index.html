@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Freight Lookup</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Freight lookup</h1>
+
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-address" aria-selected="true">Address</button>
+      <button role="tab" id="tab-zip" aria-selected="false">ZIP only</button>
+    </div>
+
+    <form id="address-form" autocomplete="off">
+      <label for="address">Customer address</label>
+      <input id="address" type="text" placeholder="Start with the street number, e.g. 123 Main St"
+             role="combobox" aria-expanded="false" aria-controls="suggestions" aria-autocomplete="list">
+      <ul id="suggestions" role="listbox" hidden></ul>
+      <p class="hint">Pick a suggestion, or type the full address and press Enter.</p>
+    </form>
+
+    <form id="zip-form" hidden>
+      <label for="zip">Destination ZIP code</label>
+      <div class="row">
+        <input id="zip" type="text" inputmode="numeric" maxlength="10" placeholder="e.g. 08701">
+        <button type="submit">Look up</button>
+      </div>
+      <p class="hint">No address check. Shows zone and rural status only.</p>
+    </form>
+
+    <div id="status" role="status" aria-live="polite"></div>
+    <section id="results" aria-live="polite"></section>
+
+    <section id="recent-section" hidden>
+      <div class="recent-head">
+        <h2>Recent lookups</h2>
+        <button id="clear-recent" class="link">Clear</button>
+      </div>
+      <ul id="recent"></ul>
+    </section>
+
+    <footer id="footer"></footer>
+  </main>
+</body>
+</html>

@@ -58,3 +58,10 @@ next session.
 
 - `PreCompact`: forces a checkpoint (commit, update `resume-note.md`, `git pull --rebase`, push). Files over 50 MB are never committed, and a checkpoint that would add over 200 MB commits nothing. Any failure (rebase conflict, other pull failure, rejected push, repo mid-rebase) leaves the commits local, forces nothing, and is written to `.claude/.last_checkpoint_sync_problem`; `SessionStart` shows that note, then injects `resume-note.md`.
 - `Stop` (`stop.sh`, the only Stop hook): runs the project's test command first, then the token checkpoint. Failing tests block stopping (once; guarded by `stop_hook_active`; tests are capped at 240s and a timeout counts as a failure) and skip the checkpoint. Define it by adding a line starting with `Test command:` followed by the command. No such line means tests are skipped and only the checkpoint runs.
+
+## Freight lookup
+
+Test command: .venv/bin/python -m unittest discover tests && node --test tests/
+
+- Web app in `site/`, published by `.github/workflows/pages.yml`. See `README.md`.
+- Rebuild data after new UPS files: `.venv/bin/python build_data.py`.

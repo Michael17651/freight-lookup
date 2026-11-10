@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Freight Lookup Explained</title>
+<style>
+  :root { --bg:#f6f7f9; --panel:#fff; --text:#1d2330; --muted:#5b6475; --line:#d7dbe3; --a:#2456c7; --g:#17663a; --gb:#e3f5e8; --o:#8a5300; --ob:#fdf1d8; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14171d; --panel:#1e222b; --text:#e8eaf0; --muted:#a2a9b8; --line:#343a47; --a:#7ea6ff; --g:#8be0aa; --gb:#183a25; --o:#f5c46b; --ob:#3d2e10; } }
+  body { margin:0; background:var(--bg); color:var(--text); font:17px/1.55 system-ui, sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font-size:1.7rem; margin:0 0 6px; } h2 { font-size:1.15rem; margin:28px 0 8px; }
+  p { margin:6px 0; } .muted { color:var(--muted); }
+  .flow { display:grid; gap:10px; margin-top:12px; }
+  .step { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .step b { color:var(--a); }
+  .two { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+  .g { background:var(--gb); color:var(--g); border:0; } .o { background:var(--ob); color:var(--o); border:0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Freight lookup</h1>
+  <p class="muted">A one-page tool for Sonny to check a customer address before quoting UPS shipping.</p>
+
+  <h2>What she does</h2>
+  <div class="flow">
+    <div class="step"><b>1. Type the address.</b> After a short pause, real addresses appear under the box. Big buildings show "(12 units)" and open a list of apartments.</div>
+    <div class="step"><b>2. Pick one.</b> The app checks it with Smarty, the address service, and fills in the full ZIP+4.</div>
+    <div class="step"><b>3. Read the cards.</b> Residential or Commercial, rural surcharge yes or no, and the UPS zone for all six services.</div>
+  </div>
+
+  <h2>Two ways to look up</h2>
+  <div class="two">
+    <div class="step"><b>Address</b><br>Needs Smarty. Gives Residential or Commercial and the exact address to copy.</div>
+    <div class="step"><b>ZIP only</b><br>No internet lookup at all. Gives zone and rural status from the UPS files.</div>
+  </div>
+
+  <h2>Where the answers come from</h2>
+  <div class="two">
+    <div class="step g"><b style="color:inherit">UPS files</b><br>The zone chart for shipments from 088 and the June 1, 2025 area surcharge list. A script turns them into small data files the page reads.</div>
+    <div class="step o"><b style="color:inherit">Smarty</b><br>Address suggestions, the official address and the Residential or Commercial flag.</div>
+  </div>
+
+  <h2>When UPS sends new files</h2>
+  <p>Drop them in the <code>data</code> folder, run the build script, run the tests, push. The site updates itself. The README has the exact commands.</p>
+
+  <h2>Why it is cheap to run</h2>
+  <p>The page waits until typing pauses before asking Smarty, so one address costs a few lookups, not one per letter. Recent lookups are saved in the browser and reopen without any lookup.</p>
+</main>
+</body>
+</html>
