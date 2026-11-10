@@ -63,7 +63,7 @@ Address search needs a Smarty account and an embedded key. Until the key is adde
 
 Why this is safe: an embedded key only works when the request comes from a website on its allowed-hosts list. Someone who copies it cannot use it from their own site. Never put a Smarty "secret key" (auth-id and auth-token) in this project.
 
-The app makes about one autocomplete lookup per pause in typing and one verification per chosen address. Check your lookup counts in the Smarty dashboard before the trial ends and pick a plan that covers US Autocomplete and US Street.
+To save lookups, suggestions start only after a house number and at least 4 letters of the street name ("123 Main", not "123 Ma"), after a half-second pause in typing. Text already looked up is not sent again during the same visit. The address check runs once, when a suggestion is picked. Check your lookup counts in the Smarty dashboard before the trial ends and pick a plan that covers US Autocomplete and US Street.
 
 ## Running the site on your computer
 

@@ -6,6 +6,13 @@ export function cleanZip(input) {
   return m ? m[1].padStart(5, "0") : null;
 }
 
+// Autocomplete only once there is a house number, a space and 4+ letters of street name,
+// so short partial typing does not spend Smarty lookups. "123 Main" -> true, "123 Ma" -> false.
+export function readyToSuggest(text) {
+  const m = String(text ?? "").trim().match(/^\d[\dA-Za-z-]*\s+(.+)$/);
+  return !!m && (m[1].match(/[a-z]/gi) || []).length >= 4;
+}
+
 // Returns [{ name, zone }] where zone is a number or null (service not available),
 // or null when the ZIP is not in the chart at all.
 export function zonesFor(zip, zones) {

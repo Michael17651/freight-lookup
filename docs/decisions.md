@@ -20,3 +20,4 @@ One entry per decision: **date — what** — why.
 - **2026-11-10 — Autocomplete tries Smarty v2 first, falls back to US Autocomplete Pro for the visit** — v2 is the newer endpoint; the fallback keeps the page working if v2 rejects the key. Errors 402 and 429 do not trigger the fallback since Pro would fail the same way.
 - **2026-11-10 — Embedded Smarty key lives in `site/config.js` and is committed** — embedded keys are public by design and locked to the allowed hosts.
 - **2026-11-10 — Recent lookups store the result, and clicking one recomputes zone and rural status locally** — no extra Smarty lookups, and the data stays current after a UPS update.
+- **2026-11-10 — Autocomplete waits for a house number, a space and 4 letters of street name, with a 500 ms pause** — the Smarty trial has 1,000 lookups. Repeated text is answered from a per-visit cache, and Enter no longer runs a free-typed address check; the check runs only when a suggestion is picked.

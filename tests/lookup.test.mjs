@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { cleanZip, zonesFor, indexSurcharge, surchargeFor } from "../site/lookup.js";
+import { cleanZip, zonesFor, indexSurcharge, surchargeFor, readyToSuggest } from "../site/lookup.js";
 
 const load = (f) => JSON.parse(readFileSync(new URL(`../site/data/${f}`, import.meta.url)));
 const zones = load("zones.json");
@@ -58,4 +58,13 @@ test("Remote lists", () => {
 
 test("Not rural", () => {
   assert.deepEqual(surchargeFor("08701", index), []);
+});
+
+test("autocomplete waits for a house number and 4 letters of street name", () => {
+  for (const yes of ["123 Main", "123 main st", " 45 N Main", "12A Elm St", "123 5th Av", "7 Pennsylvania"]) {
+    assert.equal(readyToSuggest(yes), true, yes);
+  }
+  for (const no of ["", "123", "123 ", "123 Ma", "123 N Ma", "Main St", "123Main", "123 5th"]) {
+    assert.equal(readyToSuggest(no), false, no);
+  }
 });

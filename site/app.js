@@ -1,4 +1,4 @@
-import { cleanZip, zonesFor, indexSurcharge, surchargeFor } from "./lookup.js";
+import { cleanZip, zonesFor, indexSurcharge, surchargeFor, readyToSuggest } from "./lookup.js";
 
 const KEY = (window.FREIGHT_CONFIG?.smartyKey || "").trim();
 const AUTOCOMPLETE = {
@@ -216,7 +216,7 @@ function showSuggestions(list) {
   current = list;
   if (!list.length) {
     hideSuggestions();
-    setStatus("info", "No matching addresses yet. Keep typing, or press Enter to check the full address.");
+    setStatus("info", "No matching addresses. Check the house number and street name.");
     return;
   }
   setStatus();
@@ -231,14 +231,29 @@ function showSuggestions(list) {
   input.setAttribute("aria-expanded", "true");
 }
 
+const cache = new Map(); // request -> suggestions, for this visit only
+let shownKey = "";
+
+function updateHint() {
+  $("address-hint").textContent = expand || readyToSuggest(input.value)
+    ? "Pick an address from the list."
+    : "Type the house number and street name, e.g. 123 Main";
+}
+
 async function runSuggest() {
-  const value = input.value;
-  if (expand && !value.startsWith(expand.text)) expand = null;
-  if (value.trim().length < 3 && !expand) return hideSuggestions();
+  const value = input.value.trim().replace(/\s+/g, " ");
+  if (expand && !input.value.startsWith(expand.text)) expand = null;
+  updateHint();
+  if (!expand && !readyToSuggest(value)) return (hideSuggestions(), (shownKey = ""));
+  // v2 unit lists: send only the entry id until she types past the building text.
+  const search = expand && api === "v2" && value === expand.text.trim() ? null : value;
+  const selected = expand && (api === "v2" ? expand.entryId : expand.proSelected);
+  const key = `${api}|${search}|${selected}`;
+  if (key === shownKey && !box.hidden) return; // text unchanged: nothing to do
   const no = ++requestNo;
   try {
-    const list = await suggest(expand && api === "v2" ? null : value, expand && (api === "v2" ? expand.entryId : expand.proSelected));
-    if (no === requestNo) showSuggestions(list);
+    if (!cache.has(key)) cache.set(key, await suggest(search, selected));
+    if (no === requestNo) (showSuggestions(cache.get(key)), (shownKey = key));
   } catch (e) {
     if (no === requestNo) (hideSuggestions(), setStatus("error", e.message));
   }
@@ -246,8 +261,9 @@ async function runSuggest() {
 
 input.addEventListener("input", () => {
   if (!KEY) return setStatus("info", "Address search is not set up yet (no Smarty key in config.js). Use ZIP only.");
+  updateHint();
   clearTimeout(timer);
-  timer = setTimeout(runSuggest, 300);
+  timer = setTimeout(runSuggest, 500);
 });
 
 async function pick(s) {
@@ -304,16 +320,8 @@ box.addEventListener("keydown", (ev) => {
   if (ev.key === "Escape") (hideSuggestions(), input.focus());
 });
 
-// Enter without picking a suggestion: check the typed address as one line.
-$("address-form").onsubmit = (ev) => {
-  ev.preventDefault();
-  if (!KEY) return;
-  const value = input.value.trim();
-  if (value.length < 5) return setStatus("error", "Type the full address, including city and state or ZIP.");
-  clearTimeout(timer);
-  hideSuggestions();
-  lookupAddress({ street: value });
-};
+// The address check runs only when she picks a suggestion, so Enter does nothing here.
+$("address-form").onsubmit = (ev) => ev.preventDefault();
 
 document.addEventListener("click", (ev) => {
   if (!$("address-form").contains(ev.target)) hideSuggestions();
