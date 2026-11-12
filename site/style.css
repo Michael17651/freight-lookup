@@ -66,6 +66,7 @@ form { position: relative; }
 
 .addr { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
 .addr .text { font-size: 1.25rem; font-weight: 600; }
+.addr .county { margin-top: 10px; }
 .copy { padding: 10px 18px; }
 
 .zones { width: 100%; border-collapse: collapse; margin-top: 8px; }

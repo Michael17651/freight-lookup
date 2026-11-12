@@ -51,14 +51,15 @@ function clearOutput() {
 
 const RURAL_COLOR = (name) => (/Extended/.test(name) ? "orange" : /Remote/.test(name) ? "red" : "amber");
 
-function render({ zip, rdi, address }) {
+function render({ zip, rdi, county, address }) {
   const services = zonesFor(zip, zones);
   const lists = surchargeFor(zip, surIndex);
   let html = "";
 
   if (address) {
     html += `<div class="card addr">
-      <div><div class="label">Standardized address</div><div class="text">${esc(address.line1)}<br>${esc(address.last)}</div></div>
+      <div><div class="label">Standardized address</div><div class="text">${esc(address.line1)}<br>${esc(address.last)}</div>
+        ${county ? `<div class="label county">County</div><div class="text">${esc(county)}</div>` : ""}</div>
       <button class="copy" type="button">Copy</button></div>`;
   }
 
@@ -187,6 +188,7 @@ async function verify(fields) {
   return {
     zip: c.zipcode,
     rdi: hit.metadata?.rdi || "",
+    county: hit.metadata?.county_name || "",
     address: {
       line1: [hit.delivery_line_1, hit.delivery_line_2].filter(Boolean).join(", "),
       last: c.plus4_code ? `${c.city_name} ${c.state_abbreviation} ${c.zipcode}-${c.plus4_code}` : hit.last_line,
